@@ -14,12 +14,14 @@ logging.basicConfig(
 
 log = logging.getLogger(__name__)
 
-def get_template(base_dir: pathlib.Path) -> pathlib.Path:
+def get_template(base_dir: pathlib.Path, template_category: str = "daily", template_name: str = "default.md") -> pathlib.Path:
     """Return the absolute path to the raw template for daily logs."""
 
     log.debug("get_template")
-    return base_dir.joinpath("template/daily.md")
+    return base_dir.joinpath(f"{template_category}/{template_name}.md")
 
+def get_template_bytes(template_dir: pathlib.Path, template_name: str = "daily") -> [bytes]:
+    
 
 def get_log_folder_for_month(
     log_folder_base: pathlib.Path, now: datetime
