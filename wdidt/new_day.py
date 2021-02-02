@@ -1,21 +1,4 @@
-"""new_day.py
-
-Program to create a new daily log file in the WDIDT format.
-
-Usage:
-  new_day.py [-a <num_days> | --ago=<num_days>] [-f | --force] [-V | --verbose] [-d | --dry-run]
-  new_day.py -h | --help
-  new_day.ph -v | --version
-
-
-Options:
-  -h --help             Show this help and exit.
-  -v --version          Show the version of this script and exit.
-  -f --force            Always create the log file, even if it exists.
-  -V --verbose          Show verbose logs during processing.
-  -a --ago <num_days>   Create a log file for num_days ago.
-  -d --dry-run          Run without creating the new daily log. Report what would be written.
-"""
+"""Create a new day's log file."""
 
 import datetime
 import docopt
@@ -29,12 +12,13 @@ logging.basicConfig(
     format="[%(asctime)s]%(name)s.%(levelname)s: %(message)s", level=logging.ERROR
 )
 
+log = logging.getLogger(__name__)
 
 def get_template(base_dir: pathlib.Path) -> pathlib.Path:
     """Return the absolute path to the raw template for daily logs."""
 
     log.debug("get_template")
-    return base_dir.joinpath("daily_schedule-j.md")
+    return base_dir.joinpath("template/daily.md")
 
 
 def get_log_folder_for_month(
@@ -86,28 +70,5 @@ def create_new_day(log_day: datetime, force: bool, dry_run: bool):
 
     base_folder: pathlib.Path = pathlib.Path(__file__).resolve().parent
     template: pathlib.Path = get_template(base_folder)
-    log_folder: pathlib.Path = get_log_folder_for_month(base_folder, log_day)
+    log_folder: pathlib.Path = get_log_folder_for_month(pathlib.Path.cwd(), log_day)
     create_new_log(log_day, template, log_folder, force, dry_run)
-
-
-if __name__ == "__main__":
-    opts = docopt.docopt(doc=__doc__, argv=sys.argv[1:], help=True, version="0.1")
-
-    log_level = logging.INFO
-    if opts.get("--verbose", False):
-        log_level = logging.DEBUG
-
-    log = logging.getLogger("new_day")
-    log.setLevel(log_level)
-
-    log.debug("Arguments given:")
-    log.debug(opts)
-
-    log_day = datetime.date.today()
-    if opts.get("--ago", None):
-        log_day = datetime.date.today() - datetime.timedelta(
-            days=int(opts.get("--ago", 0))
-        )
-        log.debug(f"Log file day is being set to {log_day}.")
-
-    create_new_day(log_day, opts.get("--force", False), opts.get("--dry-run", False))
