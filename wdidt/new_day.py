@@ -1,12 +1,10 @@
 """Create a new day's log file."""
 
 import datetime
-import docopt
+import json
 import logging
-import os
 import pathlib
-import shutil
-import sys
+from typing import Dict
 
 import jinja2
 
@@ -73,17 +71,24 @@ def create_new_log(
                 template_file.write(template_content)
 
 
-def create_new_day(log_day: datetime, force: bool, dry_run: bool):
+def create_new_day(log_day: datetime, force: bool, dry_run: bool, attribs: str):
     log.debug("create_new_day")
     if log_day is None:
         log_day: datetime = datetime.date.today()
         log.debug(f'Default log day being used (today={log_day.strftime("%b_%d_%y")})')
+
+    if attribs is not None:
+        props = json.loads(attribs)
+        log.debug("Properties aquired from command line:")
+        log.debug(props)
+    else:
+        props = {}
 
     base_folder: pathlib.Path = pathlib.Path(__file__).resolve().parent
     template_path = base_folder.joinpath("templates")
     jenv = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath=template_path.absolute()))
     template = jenv.get_template("daily_default.md")
     log_folder: pathlib.Path = get_log_folder_for_month(pathlib.Path.cwd(), log_day)
-    txt = template.render({'name': 'Derek Keeler', 'date': log_day.strftime("%A %B %d, %Y")})
+    txt = template.render({'date': log_day.strftime("%A %B %d, %Y")}.update(props))
     create_new_log(log_day, txt, log_folder, force, dry_run)
     
