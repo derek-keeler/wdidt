@@ -21,7 +21,10 @@ def get_template(base_dir: pathlib.Path, template_category: str = "daily", templ
     return base_dir.joinpath(f"{template_category}/{template_name}.md")
 
 def get_template_bytes(template_dir: pathlib.Path, template_name: str = "daily") -> [bytes]:
-    
+    pass
+
+
+
 
 def get_log_folder_for_month(
     log_folder_base: pathlib.Path, now: datetime
