@@ -20,9 +20,6 @@ Options:
 import datetime
 import docopt
 import logging
-import os
-import pathlib
-import shutil
 import sys
 
 from . import new_day
@@ -51,5 +48,5 @@ if __name__ == "__main__":
             days=int(opts.get("--ago", 0))
         )
         log.debug(f"Log file day is being set to {log_day}.")
-
+    
     new_day.create_new_day(log_day, opts.get("--force", False), opts.get("--dry-run", False))

@@ -1,18 +1,16 @@
-# Daily Schedule v2.2
+# Daily Goals for {{name}}
 
-Daily goals and log for {{name}}.
+Date: {{date}}
 
 ## Daily Goals
 
 _What are you working on today, as stated in today's standup?_
 
-- [ ] One
-- [ ] Two
-- [ ] Three
+- [ ] TBD
 
 ## Task List
 
-_Tasks from here are translated into Azure DevOps items/Github issues at the end of the day._
+_Tasks from here are translated into work items or issues at the end of the day._
 
 ## Morning
 
@@ -34,10 +32,6 @@ _What are the highlights from today that you care to share with your team?_
 _What are items that might be relevant to your Connect, or to your OKR resolutions?_
 
 - One
-- Two
-- Three
-- Four
-- Five
 
 ---
 
@@ -60,3 +54,5 @@ _What are your current Objectives and Key Results that you are working towards r
 - KRThree
 
 ---
+
+<!-->Daily Schedule v2.2</!-->
