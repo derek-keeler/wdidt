@@ -1,5 +1,7 @@
 # Daily Schedule v2.2
 
+Daily goals and log for {{name}}.
+
 ## Daily Goals
 
 _What are you working on today, as stated in today's standup?_
