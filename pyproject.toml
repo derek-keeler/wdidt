@@ -1,0 +1,30 @@
+[project]
+name = "wdidt"
+version = "1.0.0"
+authors = [
+    {name = "Derek Keeler", email = "derek@suchcool.ca"},
+]
+description = "What Did I Do Today? Simple application that helps track daily work to be done, supporting plain text search throughout."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "docopt",
+    "jinja2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "mypy",
+    "pytest",
+    "types-docopt"
+]
