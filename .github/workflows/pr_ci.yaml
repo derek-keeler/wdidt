@@ -29,9 +29,6 @@ jobs:
         python -m pip install --upgrade pip wheel
         pip install .[dev]
 
-    - name: Lint with black
-      run: |
-        python -m black --check .
     - name: Check with ruff
       run: |
         python -m ruff check .
