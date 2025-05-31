@@ -13,9 +13,7 @@ import click
 from wdidt.new_day import create_new_day
 import getpass
 
-logging.basicConfig(
-    format="[%(asctime)s]%(name)s.%(levelname)s: %(message)s", level=logging.ERROR
-)
+logging.basicConfig(format="[%(asctime)s]%(name)s.%(levelname)s: %(message)s", level=logging.ERROR)
 
 log = logging.getLogger(__name__)
 
@@ -91,9 +89,7 @@ def main(ago, force, verbose, dry_run, attributes, root_dir, config_file):
             log.info(f"Using configuration file: {config_file}")
             config.update(json.loads(Path(config_file).read_text()))
         else:
-            log.info(
-                f"Configuration file {config_file} does not exist.\n  - Creating a default configuration file."
-            )
+            log.info(f"Configuration file {config_file} does not exist.\n  - Creating a default configuration file.")
             config = {
                 "attributes": {"name": getpass.getuser()},
                 "root-dir": str(Path.home().joinpath(".wdidt").absolute()),
@@ -109,10 +105,22 @@ def main(ago, force, verbose, dry_run, attributes, root_dir, config_file):
         log_day = datetime.date.today() - datetime.timedelta(days=ago)
         log.debug(f"Log file day is being set to {log_day}.")
 
-    # make sure we have the attributes from the config file, and at minimum the 'name' attribute.
-    attributes = config.get("attributes", {})
-    if "name" not in attributes:
-        attributes.update({"name": getpass.getuser()})
+    # make sure we have the attributes from the config file...
+    attribs = config.get("attributes", {})
+    # override the attributes from those specified on the command line
+    cmd_attribs = {}
+    if attributes:
+        try:
+            cmd_attribs = json.loads(attributes)
+            log.debug(f"Attributes parsed from command line: {cmd_attribs}")
+        except json.JSONDecodeError as e:
+            log.exception(f"Failed to parse attributes: {e}")
+            raise click.BadParameter("Invalid format for attributes. Use JSON format.")
+    attribs.update(cmd_attribs)
+    # ensure we have a name attribute
+    if "name" not in attribs:
+        attribs.update({"name": getpass.getuser()})
+        log.warning("No 'name' attribute found in configuration file nor command line. Using the current user name.")
 
     root_folder = Path(root_dir).absolute()
     log.debug(f"Root folder is set to {root_folder}")
@@ -122,7 +130,7 @@ def main(ago, force, verbose, dry_run, attributes, root_dir, config_file):
         log_day=log_day,
         force=force,
         dry_run=dry_run,
-        attribs=attributes,
+        attribs=attribs,
         verbose=verbose,
         root_dir=root_folder,
     )
