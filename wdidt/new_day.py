@@ -1,7 +1,8 @@
 """Create a new day's log file."""
+
 import json
 import logging
-import pathlib
+from pathlib import Path
 from datetime import date
 
 import jinja2
@@ -14,10 +15,10 @@ log = logging.getLogger(__name__)
 
 
 def get_template(
-    base_dir: pathlib.Path,
+    base_dir: Path,
     template_category: str = "daily",
     template_name: str = "default.md",
-) -> pathlib.Path:
+) -> Path:
     """Return the absolute path to the raw template for daily logs."""
 
     log.debug("get_template")
@@ -26,7 +27,7 @@ def get_template(
 
 
 def get_jinja_template(
-    template_dir: pathlib.Path,
+    template_dir: Path,
     template_category: str = "daily",
     template_name: str = "default",
     template_ext: str = ".md",
@@ -38,7 +39,7 @@ def get_jinja_template(
     return jinja2.Template(template.read_text(encoding="utf8"))
 
 
-def get_log_folder_for_month(log_folder_base: pathlib.Path, now: date) -> pathlib.Path:
+def get_log_folder_for_month(log_folder_base: Path, now: date) -> Path:
     """Get the folder to contain today's log."""
 
     log.debug("get_log_folder_for_month")
@@ -52,7 +53,7 @@ def get_log_folder_for_month(log_folder_base: pathlib.Path, now: date) -> pathli
 def create_new_log(
     now: date,
     template_content: str,
-    log_folder: pathlib.Path,
+    log_folder: Path,
     force: bool = False,
     dry_run: bool = False,
 ):
@@ -78,7 +79,17 @@ def create_new_log(
                 template_file.write(template_content)
 
 
-def create_new_day(log_day: date, force: bool, dry_run: bool, attribs: str):
+def create_new_day(
+    log_day: date,
+    force: bool,
+    dry_run: bool,
+    attribs: str,
+    verbose: bool,
+    root_dir: Path,
+):
+    if verbose:
+        log.setLevel(logging.DEBUG)
+
     log.debug("create_new_day")
     if log_day is None:
         log_day = date.today()
@@ -91,12 +102,16 @@ def create_new_day(log_day: date, force: bool, dry_run: bool, attribs: str):
     else:
         props = {}
 
-    base_folder: pathlib.Path = pathlib.Path(__file__).resolve().parent
-    template_path = base_folder.joinpath("templates")
+    template_path = Path(__file__).parent.joinpath("templates")
     jenv = jinja2.Environment(
         loader=jinja2.FileSystemLoader(searchpath=template_path.absolute())
     )
     template = jenv.get_template("daily_default.md")
-    log_folder: pathlib.Path = get_log_folder_for_month(pathlib.Path.cwd(), log_day)
-    txt = template.render({"date": log_day.strftime("%A %B %d, %Y")}.update(props))
+    log_folder: Path = get_log_folder_for_month(root_dir, log_day)
+    template_values = {
+        "date": log_day.strftime("%A %B %d, %Y"),
+    }
+    template_values.update(props)
+    log.debug(f"Template values: {template_values}")
+    txt = template.render(template_values)
     create_new_log(log_day, txt, log_folder, force, dry_run)
