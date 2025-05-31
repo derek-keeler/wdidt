@@ -114,7 +114,7 @@ def main(ago, force, verbose, dry_run, attributes, root_dir, config_file):
             cmd_attribs = json.loads(attributes)
             log.debug(f"Attributes parsed from command line: {cmd_attribs}")
         except json.JSONDecodeError as e:
-            log.error(f"Failed to parse attributes: {e}")
+            log.exception(f"Failed to parse attributes: {e}")
             raise click.BadParameter("Invalid format for attributes. Use JSON format.")
     attribs.update(cmd_attribs)
     # ensure we have a name attribute
