@@ -87,7 +87,7 @@ def main(ago, force, verbose, dry_run, attributes, root_dir, config_file):
 
     config = {}
     if config_file:
-        if not Path(config_file).exists():
+        if Path(config_file).exists():
             log.info(f"Using configuration file: {config_file}")
             config.update(json.loads(Path(config_file).read_text()))
         else:
