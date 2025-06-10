@@ -1,9 +1,10 @@
 """Create a new day's log file."""
 
-import json
 import logging
 from pathlib import Path
+from pprint import pprint
 from datetime import date
+from typing import Dict, Optional, Any
 
 import jinja2
 
@@ -56,7 +57,7 @@ def create_new_log(
     log_folder: Path,
     force: bool = False,
     dry_run: bool = False,
-):
+) -> Path:
     """Copy the template to the log folder and update any dynamic elements within the file."""
 
     log.debug("create_new_log")
@@ -78,40 +79,48 @@ def create_new_log(
             with open(log_file_path, "w") as template_file:
                 template_file.write(template_content)
 
+    return (
+        log_file_path.absolute()
+    )  # Return the absolute path of the created log file, or the intended path if dry_run is True.
+
 
 def create_new_day(
-    log_day: date,
+    log_day: Optional[date],
     force: bool,
     dry_run: bool,
-    attribs: str,
+    attribs: Optional[Dict[str, Any]],
     verbose: bool,
     root_dir: Path,
-):
+) -> Path:
+    """Create a new day's log file with the given attributes."""
     if verbose:
         log.setLevel(logging.DEBUG)
 
     log.debug("create_new_day")
     if log_day is None:
-        log_day = date.today()
-        log.debug(f'Default log day being used (today={log_day.strftime("%b_%d_%y")})')
-
-    if attribs is not None:
-        props = json.loads(attribs)
-        log.debug("Properties aquired from command line:")
-        log.debug(props)
+        day = date.today()
     else:
-        props = {}
+        day = log_day
+    log.debug(f"Log day set to {day.strftime('%b_%d_%y')}")
+
+    props: Dict[str, Any] = {}
+    if attribs is not None:
+        props = attribs
+        log.debug("Properties aquired from command line:")
+        log.debug(pprint(props))
 
     template_path = Path(__file__).parent.joinpath("templates")
     jenv = jinja2.Environment(
         loader=jinja2.FileSystemLoader(searchpath=template_path.absolute())
     )
     template = jenv.get_template("daily_default.md")
-    log_folder: Path = get_log_folder_for_month(root_dir, log_day)
-    template_values = {
-        "date": log_day.strftime("%A %B %d, %Y"),
+    log_folder: Path = get_log_folder_for_month(root_dir, day)
+    template_values: Dict[str, Any] = {
+        "date": day.strftime("%A %B %d, %Y"),
     }
     template_values.update(props)
     log.debug(f"Template values: {template_values}")
     txt = template.render(template_values)
-    create_new_log(log_day, txt, log_folder, force, dry_run)
+    log_file = create_new_log(day, txt, log_folder, force, dry_run)
+
+    return log_file
