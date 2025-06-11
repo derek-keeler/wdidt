@@ -36,8 +36,8 @@ log = logging.getLogger(__name__)
 @click.option(
     "-A",
     "--attributes",
-    type=Optional[Dict[str, Any]],
-    default=None,
+    type=str,
+    default="",
     help="Added attributes to render the daily log with. Format: {key1:value1,key2:value2}",
 )
 @click.option(
@@ -84,7 +84,7 @@ def main(
     force: bool,
     verbose: bool,
     dry_run: bool,
-    attributes: Optional[Dict[str, Any]],
+    attributes: str,
     root_dir: Path,
     config_file: Path,
     launch_editor: bool = False,
@@ -135,7 +135,7 @@ def main(
     attribs = config.get("attributes", {})
     # override the attributes from those specified on the command line
     cmd_attribs = {}
-    if attributes:
+    if attributes and attributes.strip():
         try:
             cmd_attribs = json.loads(attributes)
             log.debug(f"Attributes parsed from command line: {cmd_attribs}")
