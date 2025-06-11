@@ -2,7 +2,7 @@
 
 import logging
 from pathlib import Path
-from pprint import pprint
+from pprint import pformat
 from datetime import date
 from typing import Dict, Optional, Any
 
@@ -107,7 +107,7 @@ def create_new_day(
     if attribs is not None:
         props = attribs
         log.debug("Properties aquired from command line:")
-        log.debug(pprint(props))
+        log.debug(pformat(props, width=120))
 
     template_path = Path(__file__).parent.joinpath("templates")
     jenv = jinja2.Environment(
