@@ -170,7 +170,8 @@ def main(
         else:
             log.debug(f"Launching editor for log file: {log_file}")
             if platform.system() == "Windows":
-                os.startfile(str(log_file))
+                # os.startfile is only available on Windows and MyPy doesn't like that it's here when run on Linux.
+                os.startfile(str(log_file))  # type: ignore[attr-defined]
             elif platform.system() == "Darwin":
                 subprocess.run(["open", str(log_file)])
             else:
