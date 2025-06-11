@@ -116,7 +116,7 @@ def create_new_day(
     template = jenv.get_template("daily_default.md")
     log_folder: Path = get_log_folder_for_month(root_dir, day)
     template_values: Dict[str, Any] = {
-        "date": day.strftime("%A %B %d, %Y"),
+        "date": day,
     }
     template_values.update(props)
     log.debug(f"Template values: {template_values}")
