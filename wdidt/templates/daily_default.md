@@ -1,6 +1,6 @@
 # Daily Goals for {{name}}
 
-Date: {{date}}
+Date: {{date.strftime("%A %B %d, %Y")}}
 
 ## Daily Goals
 
@@ -12,47 +12,22 @@ _What are you working on today, as stated in today's standup?_
 
 _Tasks from here are translated into work items or issues at the end of the day._
 
-## Morning
+{% if date.strftime('%A') == 'Monday' %}
+## Weekly Goals
 
-## Workout
-
-## Afternoon
-
-## Daily Summary
-
-_What are the highlights from today that you care to share with your team?_
+_What are items that might be relevant to your Connect?_
 
 - One
-- Two
 
----
+{% endif %}
 
+{% if date.strftime('%A') == 'Friday' %}
 ## Weekly Summary
 
-_What are items that might be relevant to your Connect, or to your OKR resolutions?_
+_What are items that might be relevant to your Connect?_
 
 - One
 
----
+{% endif %}
 
-## Retrospective or 1:1 Tasks
-
-_Are there any tasks that came up in your latest 1:1, or your last sprint retro that need to be done?_
-
-- One
-
----
-
-## Current OKRs
-
-_What are your current Objectives and Key Results that you are working towards resolving?_
-
-### Objective
-
-- KROne
-- KRTwo
-- KRThree
-
----
-
-<!-->Daily Schedule v2.2</!-->
+<!-->Daily Schedule v3.0</!-->

@@ -26,7 +26,7 @@ dev = [
     "ruff",
     "pytest",
     "pytest-cov",
-    "types-docopt"
+    "types-click",
 ]
 
 [tool.ruff]
